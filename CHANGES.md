@@ -1,0 +1,580 @@
+# 1.0.1
+
+* Fix for benchmark_compatibility_checking flag. (thanks @mateusz-blaszkowski;
+  GH-707)
+
+# 1.0.0
+
+New features:
+* Added decoders to configs which allow for additional config validation
+  (GH-672)
+* Add support for GCE custom VMs (GH-664)
+* Providers can now selectively support benchmarks (GH-690)
+
+Breaking changes:
+* Enhanced config usage by multi-node benchmarks - this changes some of their
+  default metadata. (GH-669)
+* YCSB histogram results are now not included by default (GH-656)
+
+Enhancements:
+* Ping benchmark is now bi-directional (GH-685)
+* Metadata flag can be specified multiple times (GH-684)
+* Allow AWS regions as well as zones (GH-658)
+* Added 'vm_count' metadata to all benchmarks (GH-659)
+* GCP now creates networks (GH-648)
+* Added provision and teardown run_stages (GH-652)
+* Update tomcat_wrk to report more samples (GH-650)
+* Add a flag to control the log file log level (GH-651)
+
+Bugfixes and maintenance updates:
+* Added helper for mocking FLAGS (GH-678)
+* Fix for silo benchmark which fails when running behind proxy (thanks
+  @mateusz-blaszkowski; GH-680)
+* Fix for not-installed curl package (thanks @mateusz-blaszkowski; GH-681)
+* Invoke YCSB from its installation directory (GH-677)
+* Fix bug with detecting run_uris (GH-673)
+* Fix the image_project flag so it works as intended (thanks @wonderfly; GH-666)
+* Add explicit --boot-disk-auto-delete to GCE VM creation (GH-670)
+* Improved the README layout and fixed errors (GH-661, GH-660)
+* Broaden exception caught during PKB run (GH-667)
+* Fixed bug with run stages (GH-665)
+* Fixed formatting of docstring (thanks @wonderfly; GH-662)
+* Fixed bug with GCP networks (GH-663)
+* Add GetMachineTypeDict() to replace machine_type in Sample metadata (GH-653)
+* Add GcloudCommand helper (GH-649)
+* Fixed Tomcat download URL (GH-700)
+* Retry RemoteCopy operations (GH-699)
+* Various fixes to data disks for OpenStack (thanks @meteorfox; GH-688)
+
+# 0.24.0
+
+New features:
+* CS2 rachel web serving benchmark (thanks @rmend016; GH-451)
+* Add [AliCloud](http://intl.aliyun.com/) provider (thanks @hicrazyboy; GH-611)
+* Add tomcat/wrk benchmark (GH-598)
+
+Breaking changes:
+* Remove `--parallelism` flag (GH-633)
+* Rename `fio` flags (GH-518, GH-581)
+* Added new disk type options to clarify use. (Breaking change) we will remove
+  the current options in a coming release (GH-599)
+
+Enhancements:
+* Docker support in DigitalOcean and StaticVirtualMachine (thanks @maxking; GH-528)
+* Always use latest Azure package (GH-585)
+* Support `read/counter_read/mixed` in cassandra_stress benchmark (GH-607,
+  GH-592)
+* Add pretty-printed benchmark run summary table (GH-620)
+* Support new configs in the
+  [Cloudsuite web serving](http://parsa.epfl.ch/cloudsuite/web.html) benchmark
+  (GH-605)
+
+Bugfixes and maintenance updates:
+* Move providers to their own directory (GH-617)
+* Automatically register VM classes and specs (GH-600)
+* Only load needed provider modules (GH-635, GH-636)
+* Prefix benchmark and packages directories with `linux_` (GH-640)
+* Update to OpenStack Nova (thanks @meteorfox; GH-613)
+* Add `AUTHORS` file; update copyright header (GH-618)
+* Continue executing benchmarks after one fails (GH-614)
+* Disk integration tests for GCE, AWS, Azure (GH-571, GH-595)
+* Update Windows `cluster_boot` benchmark to match Linux one (GH-647)
+* Update `README` for lazy-loading providers (GH-645)
+* Only call `SetupPackageManager` if `install_packages` is True (GH-644)
+* Generate per-VM-group SSH aliases (GH-639)
+* Move AWS and Azure `_GetDefaultImage` calls to `_CreateDependencies` (GH-641)
+* Get Azure default image name from `azure vm image list` (GH-637)
+* Add `boto` lib version to object storage benchmark metadata (GH-632)
+* Improve the guide on using Docker (thanks @mateusz-blaszkowski; GH-628)
+* Improvements to VM pool handling (GH-626, GH-608)
+* Make benchmark metadata specify benchmark name (GH-615)
+* Support overriding Azure client lib version (GH-587)
+* Update Cassandra version to 2.1.10 (GH-577)
+
+
+# v0.23.0
+
+Known Issues:
+
+* Resources fail to be cleaned up when PerfKitBenchmarker receives SIGINT while
+  running with `--parallel` (GH-529).
+
+New Features:
+
+* Added [CloudStack](http://cloudstack.apache.org) provider support (thanks @syed; GH-558).
+* **❢ BREAKING CHANGE:** Added a more flexible benchmark configuration system
+  (GH-510, GH-546). This supports running the same benchmark multiple times,
+  and running a benchmark using heterogeneous machine types and clouds. See [the
+  wiki](https://github.com/GoogleCloudPlatform/PerfKitBenchmarker/wiki/PerfkitBenchmarker-Configurations)
+  for more information. This replaces the configuration system under
+  `perfkitbenchmarker/deployment`.
+* New benchmark: `redis_ycsb`, which runs YCSB against a single YCSB node (GH-511).
+
+Enhancements:
+
+* Added flag: `--archive_bucket`, to archive the results of a run to Google Cloud
+  Storage or S3 (GH-489).
+* Added `--prefill_device` option to fio benchmark. Note that the `fio` benchmark
+  now defaults to *not* pre-filling the device when testing against a filesystem (GH-515, FH-516).
+* Updated `cloud_bigtable_ycsb` benchmark to pre-split table, following HBase recommendions (GH-524).
+* Added additional logging to `LinuxVirtualMachine.RobustRemoteCommand` (GH-534).
+* Added support for local disks with EC2 `d2` types.
+* Kubernetes: Support `emptyDisk` disk types (thanks @mateusz-blaszkowski GH-565).
+* `cluster_boot`: Add `num_vms` metadata (GH-575).
+* Add published `run_uri` to VM metadata (GH-579).
+* Add a flag to specify the Azure Python library version in object storage benchmark,
+  default to the latest version (GH-585, GH-587).
+
+Bugfixes and maintenance updates:
+
+* Kubernetes: Adapt provider to work with different versions of `kubectl`
+  (Thanks @mateusz-blaszkowski; GH-574).
+* Eliminated a spurious resource warning (GH-522).
+* Fixed a string comparison bug in Object storage benchmark (GH-526).
+* Rackspace; Removed an extra parameter from firewall implementation (thanks @meteorfox, GH-531).
+* Rackspace: Fixed an SSH key upload bug (thanks @meteorfox, GH-539).
+* Fix an issue with loggin errors in `vm_util.RunThreaded` (GH-542; thanks @mateusz-blaszkowski for reporting).
+* `mongodb_ycsb`: Update default write concern to "Acknowledged" (equivalent to the previous deprecated option, safe) (GH-543).
+* Specify SSH port when using SCP (thanks @mateusz-blaszkowski GH-548).
+* Fix string conversion (thanks @mateusz-blaszkowski GH-556).
+* `hbase_ycsb`: Make load records use a BufferedMutator (GH-566).
+
+# v0.22.1
+
+* Update the default image used in Azure tests to Ubuntu 14.04.3 (runs failed
+  with the current image.) (cherry-pick of #520)
+
+# v0.22.0
+* New Features:
+  * Add Kubernetes as a provider where benchmarks can be run (thanks @mateusz-blaszkowski) (GH-475)
+  * Add EPFL CloudSuite WebSearch Workload (thanks @Vukasin92) (GH-422, GH-479)
+  * Aerospike_yscb_benchmark (GH-486)
+
+* Enhancements:
+  * OpenStack checks/changes for attaching volumes, default volume size, config improvements, … (thanks @kivio) (GH-454, GH-459, GH-464)
+  * Fio test improvements and clean-up - template files, logging, ...  (GH-421, GH-501, GH-502)
+  * Add improvement to use compiled crcmod when benchmarking Google Cloud Storage (GH-461)
+  * Collect Fio data over time via “--run_for_minutes” flag (GH-477)
+  * Execute command improvements to add better logging and parallelism (GH-488, GH-470)
+
+* Bugfixes and maintenance updates:
+  * Update to allow PKB to work with the latest Azure CLI 0.9.9 (GH-485)
+  * Updated fio version to 2.2.10 (GH-509)
+  * fio iodepth flag fix “--io_depths”  (GH-495)
+  * Fixes a race condition on AWS/Azure where networks in use were deleted (GH-506)
+  * Added a note on how to fix dependencies when tox tests fail (GH-505)
+  * Fixed  broken Apache project links (GH-492, GH-467)
+  * Netperf timeout to work around occasional hangs (GH-483)
+  * Fixed lock pickling issues (GH-471)
+
+# v0.21.0
+
+* New features:
+  * Add support for OpenStack affinity and anti-affinity groups. (GH-440, thanks to @kivio)
+  * Add large object scenario for CLI tests in object_storage_service. (GH-445)
+  * Add support for pre-emptible GCE VMs. (GH-415)
+
+* Enhancements:
+  * Parallelize cassandra_ycsb and hbase_ycsb benchmark setups. (GH-435)
+  * Add more config options for aerospike benchmark. (GH-450)
+
+* Bugfixes and maintenance updates:
+  * Refactor OpenStack network IP management. (GH-438, thanks to @kivio)
+  * Fix thread lock pickling bug. (GH-425, thanks to @kivio)
+  * Update jars used in cloud_bigtable_ycsb benchmark. (GH-444)
+  * Update YCSB to v0.3.0. (GH-428)
+  * Fix object_storage_service bug introduced by Azure breaking change. (GH-446)
+  * Fix object storage CLI output format. (GH-449)
+
+# v0.20.0
+
+* Enhancements:
+  * Specify project to gcloud alpha bigtable clusters list (GH-433)
+  * More Samples in FIO (GH-416)
+
+* Bugfixes and maintenance updates:
+  * pkb label problem in OpenStack driver fixes (GH-410)
+  * On exception, only cleanup if run stage is all/cleanup (GH-412)
+  * Fix issue with using a flag before flags are parsed (GH-413)
+  * Umount disk when running fio against raw device. (GH-417)
+  * Clarify warnings from `ycsb._CombineResults`. (GH-432)
+
+# v0.19.0
+
+* New features:
+  * New mysql_service benchmark. This benchmarks a cloud's managed MySQL
+    offering using sysbench. (GH-387)
+
+* Enhancements:
+  * Added option to disable iptables if your image requires it (GH-361)
+  * mongodb_ycsb now installs client and server dependencies in parallel,
+    speeding up the end to end run time for the benchmark. (GH-402)
+  * The netperf and iperf benchmarks now only add firewall rules if they are
+    running over external ips. (GH-382)
+
+* Bugfixes and maintenance updates:
+  * The iperf package will now check the 'redhat-release' version and install
+    directly from an RPM (this enables iperf to be run on Scientific Linux 6.x).
+    (GH-392, thanks to @Vukasin92)
+  * Fix bug where VM temporary directory wasn't created before use on RHEL based
+    static VMs. (GH-389, thanks to @Vukasin92)
+  * netperf package url changed since version 2.6.0 is now in archive/ (GH-390)
+  * Fixed DigitalOcean package installation error (GH-396)
+  * The object_storage_service benchmark no longer copies gcloud logs as part of copying
+    the gcloud configuration to the VM. (GH-383)
+  * Correctly cleanup network resources when run stages are used. (GH-386)
+  * Added timeout to apt-get update command because it will occasionally hang.
+    (GH-391)
+  * Update copy_throughput benchmark so it works with
+    ContainerizedVirtualMachines. (GH-408)
+  * Install python inside ContainerizedVirtualMachines so that
+    RobustRemoteCommand works on them. (GH-404)
+
+* Benchmark-specific changes:
+  * speccpu2006 will no longer report results if the run was incomplete. This
+    behavior can be modified with a flag. (GH-397)
+  * The mongodb benchmark has been completely removed since mongodb_ycsb
+    replaced it with greater functionality. (GH-403)
+  * The fio benchmark now has more latency percentiles included in sample
+    metadata. (GH-399)
+  * Cassandra version bumped up to 2.0.16 since 2.0.0 has known issues (GH-393)
+
+
+# v0.18.0
+
+(See also https://github.com/GoogleCloudPlatform/PerfKitBenchmarker/issues/369
+which includes this change log with clickable GH-* links.)
+
+* New features:
+  * Support OpenStack as cloud provider (GH-305, GH-353, thanks @kivio and
+    @mateusz-blaszkowski)
+  * Support Rackspace as cloud provider (GH-336, thanks @meteorfox and @jrperritt)
+  * Add support for ContainerizedVM using docker exec (GH-333, thanks @gablg1)
+  * Windows guest VM support on Static VM (GH-350), Azure (GH-349, GH-374), AWS
+    (GH-347), and GCE (GH-338)
+  * Add NTttcp Windows networking benchmark (GH-348)
+
+* Enhancements:
+  * Support using proxies in VMs (GH-339, GH-337, thanks @kivio)
+  * Enable optional migration on GCE (GH-343)
+  * Execute long running commands via a remote agent (GH-310)
+  * Add resource creation/deletion times to logs (GH-316)
+
+* Bugfixes and maintenance updates:
+  * Update PKB to work with Azure version 0.9.3 (GH-312)
+  * Fix AWS CLI usage on Windows host (GH-313)
+  * Auto-fetch AMI IDs for AWS images (GH-364)
+  * Fix publisher missing info for default image and machine type (GH-357)
+  * Fix 'no attribute pkb_thread_log_context' error for sub-thread logs (GH-322)
+
+* Benchmark-specific changes:
+  * aerospike: config/flag handling bugfixes (GH-367, GH-360, GH-354)
+  * cassandra_ycsb: move num_vms prerequisite check
+  * fio: add latency percentiles for results (GH-344)
+  * hadoop_terasort: Fix bad SSH option (GH-328)
+  * iperf: add lower bounds to arguments (GH-314)
+  * iperf: add timeout to parallel benchmark runs to handle iperf hangs (GH-375)
+  * netperf: Support confidence intervals, increase test length, report stddev
+    (GH-317, GH-306)
+  * ycsb: Drop unaggregatable results from samples (GH-324)
+
+* Development and testing:
+  * **Breaking Change** Automated testing now uses `tox` (GH-330)
+  * Refactored hook scripts, including new opt-in pre-push hook (GH-363)
+  * Use travis for CI testing (GH-340)
+  * Speed up tests using timeouts (GH-299)
+
+* Internals:
+  * Move defaults from benchmark_spec to VM classes, move network instantiation
+    out of benchmark spec (GH-342)
+  * Add event hook support (GH-315)
+  * Refactor VM classes (GH-321)
+
+# v0.17.0
+
+* Add initial support for DigitalOcean as a cloud provider (GH-291).
+* Add SciMark2 Benchmark (GH-271, thanks @zlim!).
+* New NoSQL benchmarks: `cloud_bigtable_ycsb` (GH-283), `mongodb_ycsb`
+  (GH-279), `cassandra_ycsb` (GH-278).
+* Allow PerfKitBenchmarker to run on a Windows controller (GH-274).
+* Add a `--dstat` flag, to collect performance metrics during benchmark runs
+  (GH-282).
+* Add support for parallel iperf clients to the iperf benchmark (GH-262).
+* Add scratch disk information to sample metadata (GH-277).
+* Add a 5 minute timeout to local commands (GH-289, GH-293).
+* Do not use FLAG values in generating benchmark documentation (GH-280).
+* Bump HBase to v1.0.1.1 (GH-281).
+* Fix an issue preventing resources from being cleaned up (GH-276).
+
+# v0.16.0
+
+* **Breaking Change** Added a new scratch disk type: "local" (ephemeral
+  storage bundled with the instance). As a result, the type "ssd" was
+  changed to "remote_ssd". (GH-253)
+* You can now omit "--run_uri" under certain circumstances. (GH-255)
+* Support for striping multiple scratch disks together has been added. (GH-259)
+* Add hbase_ycsb benchmark. (GH-263)
+* Use the boto API differently when downloading a one byte object to avoid
+  the unnecessary HEAD request (and issue GET request only). (GH-264)
+* Move VM name to BaseVirtualMachine. (GH-265)
+* Write an SSH config file to the run temp directory. (GH-266)
+* Fix a typo in package_managers.py. (GH-267)
+* Add a Cassandra package. (GH-268)
+* GCE: do not restart on host failure. (GH-273)
+* Fix Hash Sum mismatch errors. (GH-275)
+
+# v0.15.0
+
+* Add ability to inject environment variables to IssueCommand. (GH-231)
+* More SPEC CPU 2006 execution flexibility. (GH-230)
+* Enable different disk types for cassandra_stress test. (GH-252)
+* Add the option to skip installing packages. (GH-223)
+* Expose VM count and scratch disk requirements in help. (GH-240, GH-241)
+* Add iops and against device flag. (GH-236)
+* Netperf: Parse CSV output; add p50, p90, p99. (GH-222)
+* Logging fixes and enhancements. (GH-68)
+* Fixes some apt-get update flakiness. (GH-250)
+* Updates AWS to use `_Exists` for resources. (GH-228)
+* Fixes small bug wth GCP metadata. (GH-242)
+* Call benchmark specific cleanup() when there is exception. (GH-239)
+* Fix the command that creates a storage account for Azure. (GH-238)
+* Defines BENCHMARK_INFO for all benchmarks. (GH-232)
+* Fixes issue with retry. (GH-233)
+* Make resource deletion continue even when exceptions are thrown. (GH-224)
+* Fix a DivideByZeroError in side-by-side. (GH-226)
+
+# v0.14.0
+
+* Added the Silo filesystem benchmark (GH-170)
+* Added Azure Blobs support to the object_storage_service_benchmark (GH-209)
+* Logging now prints in color to make it easier to read (GH-212)
+* Improvement to allow SSH port selection is static machine configs (GH-201)
+* Bug fix for the filesystem workloads when using PIOPS (GH-190)
+* Bug fixes for the side-by-side tool to use the right workload name. (GH-220)
+* Bug fix for a race condition in an exception path that could leave resources behind (GH-214)
+
+# v0.13.0
+
+* Show metadata in StreamPublisher. (GH-178)
+* **Breaking Change**: Use parser to extract fio benchmark results, and
+  change metric name from job_name:bandwidth/latency to
+  job_name:read/write:bandwidth/latency. (GH-192)
+* Add unit test to check proper handling of scratch disk property. (GH-191)
+* Fix bug where exceptions raised in a runthreaded thread may not have
+  been raised after the threads had been joined. (GH-194)
+* Stop mutating globals in GetInfo. (GH-198)
+* **New Benchmark**: oldisim. (GH-200)
+* Add oldisim benchmark to google_set and stanford_set.
+* Add max_throughput_for_completion_latency_under_1ms metric to redis and
+  aerospike benchmarks. (GH-203)
+
+# v0.12.1
+
+* Fix a tagging issue from prior release (v.0.11.0) where a prior commit made
+  directly to master was not properly included.
+
+# v0.12.0
+
+* Add per-phase timestamp samples (GH171)
+* Regex improvement (GH182)
+* Fix a bug in mesh network benchmarks (GH163)
+* Fix for running on AWS when user has a non-JSON output format
+  configured(GH167)
+* Clarify how to provide scratch disk for static VMs (GH166)
+* Add benchmark name, run URI to log messages (GH157)
+* Fix fio_benchmark to support static VMs (GH162)
+* Optional patch to the unix bench for 16+ core VMs (GH 135)
+
+# v0.11.1
+
+* Fixed CHANGES.md
+
+# v0.11.0
+
+* Create Intel benchmark set (integrate from main v0.10.1)
+* Support adding custom resource tags to AWS and GCE runs
+* Limited hadoop terasort resource usage to 90% of the VM available memory
+* Download and install package epel-release if not present
+* Fixed dead link in README.md
+
+# v0.10.0
+
+* Various improvements to object_storage_service benchmarks. This includes
+  reporting results in percentiles, adding a list consistency benchmark,
+  and more. (GH-100 through GH110).
+* Rename test_sample to sample_test. (GH-111)
+* Updated the EPEL repo on RHEL and CentOS to use `epel-release` available
+  through yum rather than a downloaded rpm. (GH-99)
+* Added more benchmark sets
+
+# v0.9.0
+
+* **Breaking change**: removed `--json_output` flag. JSON samples are always
+  written (GH-41).
+* **Breaking change**: `object_storage_service` requires a `.boto` file
+  configured for AWS and GCS to function.
+* **Breaking change:** updated benchmark names to be more consistent (GH-72).
+  Specific changes:
+
+    + `cassandra` → `cassandra_stress`
+    + `copy_benchmark` → `copy_throughput`
+    + `fio_benchmark` → `fio`
+    + `hadoop_benchmark` → `hadoop_terasort`
+    + `mesh_benchmark` → `mesh_network`
+    + `netperf_simple` → `netperf`
+    + `object_storage_benchmark` → `object_storage_service`
+    + `synthetic_storage_workloads_benchmark` → `block_storage_workload`
+    + `sysbench_oltp_benchmark` → `sysbench_oltp`
+    + `UnixBench_benchmark` → `unixbench`
+
+* Added support for C4 instance types on EC2 (GH-63).
+* Added support for specifying `--product_name` on the command line (GH-55).
+* Added side-by-side comparison tool (GH-39, GH-61, GH-62).
+* Factored out package management to support RHEL, CentOS (GH-54).
+* Improved accuracy of cluster boot time (GH-69, GH-73).
+* Introduced a class to represent performance samples (GH-71)
+* Updated Hadoop benchmark to calculate per-core terasort throughput (GH-75).
+* Added a results parser for bonnie++ benchmark (GH-70).
+* Added a results parser for fio benchmark (GH-32).
+* Added prerequisite checking to benchmarks (GH-49).
+* Switch to Apache distribution of Cassandra (GH-92).
+* Improved default behavior for machine types with no local storage (GH-88).
+* Updated `object_storage_service` benchmark to test both command line tool
+  performance and direct API calls (GH-59, GH-90).
+* Added benchmark sets: predefined collections of benchmarks to run (GH-80).
+* Modified HPCC benchmark to use 80% of available memory rather than 80% of
+  total. Prevents crashes on low-memory systems (GH-81).
+* Updated the default Azure image (GH-84).
+* Improved the Cassandra stress benchmark to incorporate a user-specified
+  number of rows, with defaults that run on all cloud platforms with default
+  quotas (GH-31).
+* Improved the Cassandra stress benchmark to incorporate a user-specified
+  number of cassandra-stress threads on client node, with defaults of 50
+  (originally default was 300 which caused the benchmark to crash on small
+  instance types). As a result, on large instance types, the throughput
+  reported by cassandra-stress tool is lower than previous version (GH-31).
+
+# v0.8.0
+
+* Documentation cleanup (GH-19, GH-34).
+* Fix incorrect assignment of `ip_type` metadata in `netperf_simple` benchmark (GH-26).
+* Added `--gcloud_scopes` flag, to support providing permissions to created instances on GCP.
+* Changed GCP default image from `debian-7-backports` to `ubuntu-14-04`. All cloud providers now run Ubuntu 14.04 by default (GH-43).
+* Added results parser for MongoDB (GH-36) and UnixBench++ (GH-45).
+* Improved unit test coverage (GH-21).
+
+# v0.7.1
+
+* GCE VM SSH keys are now provided via a temporary file rather than the command
+  line, which fixes a compatibility issue between versions of `gcloud` (GH-19).
+
+# v0.7.0
+
+* New benchmark: `aerospike` (GH-13).
+* `iperf`: Run benchmark in both directions (VM A -> VM B and B -> A) (GH-7).
+* `hadoop_benchmark`: Bump Hadoop to version 2.5.2 (GH-5).
+* `synthetic_storage_workloads_benchmark`: Fix IO sizes passed to `fio`.
+* Add a verbose log to `/tmp/perfkitbenchmarker/run_<run_uri>/perfkitbenchmarker.log`
+  (exact file name announced to stderr at start of run) (GH-3).
+* Merge `perfkitbenchmarker_lib` into `vm_util` (GH-9)
+* Refactor result publishing and metadata collection (GH-10).
+* Add a Google Cloud Storage publisher (GH-14)
+* Change the default Azure machine type to "Small".
+* Added unit tests.
+* Style fixes.
+
+# v0.6.0
+
+Initial release under Apache 2.0 license.
+
+## Unreleased
+
+# v0.5.1
+
+* Fix for HPCC result parser.
+* Fix MySQL configuration in sysbench OLTP benchmark.
+
+# v0.5
+
+v0.5 contains primarily bugfixes and internal improvements.
+
+New dependency:
+`jinja2`. Install with `pip install jinja2`.
+
+New Benchmarks:
+* `synthetic_storage_workloads_benchmark`: new `fio` benchmarks to simulate
+  logging, database and streaming workloads.
+
+Fixes and usability improvements:
+
+* Bugfixes in Cassandra benchmark: variable redefinition, invalid method name.
+* Add default config file for Cassandra benchmark.
+* Add an `--ip_addresses` flag for networking benchmarks
+* Replace sed with jinja2 templates for Hadoop configuration.
+* Make the default image Debian backports for GCE.
+* Add scratch disks for static VMs.
+* No longer specifying absolute path to azure.
+* Fixe a bug preventing AWS t2 types from working.
+* Add local drives.
+* Run scp copy benchmark on internal IP if accessible.
+* Give immediate feedback on an exception during an Artemis run.
+* Add placement groups for AWS.
+* Add a method to burn cpu and dirty cache.
+* Standardize SCP zone metadata to match iperf, netperf
+
+# v0.4
+
+New Benchmarks:
+* Add a Cassandra benchmark.
+
+New features of note:
+* Static VM files are now JSON format, support the optional zone specification.
+
+Fixes:
+
+* Fix coremark compilation on Ubuntu 14.04.
+* Do not include network creation time in VM creation time.
+* Set GCE VMs to terminate on host maintenance rather than live migrating.
+* Enable DNS hostnames on AWS.
+* Fixed configuration error in Hadoop benchmark.
+* Fixed an error in dd benchmark.
+
+# v0.3
+
+New Benchmarks:
+
+New features of note:
+Resource tagging -
+* Add a "user" tag defaulting to the logged in user name to GCE and EC2 VMs.
+
+Fixes:
+* VMs, Networks, and disks now inherit from resource.BaseResource for uniform resource lifecycle management.
+* Update object_storage_benchmark match latest CLI from all providers; retrieve credentials file from default location for each cloud provider.
+* Add __setstate__ and __getstate__ methods so that pickling of GCE and AWS firewalls works again
+* Exit with an error when invalid benchmark names are specified.
+* Add support for running hadoop_benchmark on EC2.
+* Upgrade from Ubuntu 12.04 LTS (Precise) to 14.04 LTS (Trusty) on AWS and Azure.
+* Fix AzureDisk to be compatible with the latest version of the CLI
+
+# v0.2
+* Added end to end run time metric.
+* Renamed `storage_benchmark` to `object_storage_benchmark`.
+* Embedded PerfKitBenchmarker version in published metadata.
+* Improved help message in PerfKitBenchmarker.
+* Allow PerfKitBenchmarker to use multiple types of VMs and multiple disks with different sizes in a single benchmark.
+* Fixed iperf parsing regex results
+* Cleaned up versioning - Checked out specific versions from git in the MongoDB, OpenBLAS, Redis, and storage benchmarks.
+* Fixed corner cases in SPEC 2006 causing it to fail on large instances.
+
+# v0.1
+
+* Support static vms (i.e. machine not provisioned via Cloud APIs. We call all machines VMs). All static VMs provided will be used before any non-static VMs are provisioned.
+* See static_virtual_machine.py for detailed description.
+* Added copy benchmark.
+* Added storage benchmark.
+* Added ping benchmark.
+* Added SpecCPU2006 benchmark.
+
+# v0.0
+
+Initial release.
